@@ -38,6 +38,7 @@ pipeline {
         }
         stage('Check Status') {
             steps {
+            withAWS(credentials: 'aws-auth', region: 'us-east-1') {
                 script {
                     def deploymentStatus = sh(
                         returnStdout: true,
@@ -78,6 +79,6 @@ pipeline {
                 
     }
 
-
+}
 
 }
