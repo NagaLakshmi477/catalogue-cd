@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: roboshop
+  labels:
+    component: catalogue
+    project: roboshop
+    tier: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: catalogue
+      project: roboshop
+      tier: app
+  template:
+    metadata:
+      labels:
+        component: catalogue
+        project: roboshop
+        tier: app
+    spec:
+      containers:
+      - name: catalogue
+        image: "{{ .Values.deployment.imageUrl }}:{{ .Values.deployment.imageVersion }}"
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            cpu: "80m"
+            memory: "298Mi"
+        envFrom:
+        - configMapRef:
+            name: catalogue
