@@ -35,10 +35,47 @@ pipeline {
             
             }
         
-        
-        
         }
-    
+        stage('Check Status') {
+            steps {
+                script {
+                    def deploymentStatus = sh(
+                        returnStdout: true,
+                        script: "kubectl rollout status deployment/catalogue --request-timeout=30s || echo FAILED"
+                    ).trim()
+
+                    echo "Deployment Status: ${deploymentStatus}"
+
+                    if (deploymentStatus.contains("FAILED")) {
+
+                        echo "Deployment failed. Starting Helm rollback..."
+
+                        sh """
+                            helm rollback ${component} -n ${project}
+                            sleep 20
+                        """
+
+                        def rollbackStatus = sh(
+                            returnStdout: true,
+                            script: "kubectl rollout status deployment/catalogue --request-timeout=60s || echo FAILED"
+                        ).trim()
+
+                        echo "Rollback Status: ${rollbackStatus}"
+
+                        if (rollbackStatus.contains("FAILED")) {
+                            error("Rollback failed")
+                        } else {
+                            echo "Rollback successful"
+                            error("Deployment failed but rollback completed successfully")
+                        }
+
+                    } else {
+                        echo "Deployment success"
+                    }
+                }
+            }
+        }
+                
     }
 
 
