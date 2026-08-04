@@ -42,7 +42,7 @@ pipeline {
                 script {
                     def deploymentStatus = sh(
                         returnStdout: true,
-                        script: "kubectl rollout status deployment/catalogue --request-timeout=30s -n $project|| echo FAILED"
+                        script: "kubectl rollout status deployment/catalogue --timeout=30s -n $project|| echo FAILED"
                     ).trim()
 
                     echo "Deployment Status: ${deploymentStatus}"
@@ -58,7 +58,7 @@ pipeline {
 
                         def rollbackStatus = sh(
                             returnStdout: true,
-                            script: "kubectl rollout status deployment/catalogue --request-timeout=60s -n $project|| echo FAILED"
+                            script: "kubectl rollout status deployment/catalogue --timeout=60s -n $project|| echo FAILED"
                         ).trim()
 
                         echo "Rollback Status: ${rollbackStatus}"
