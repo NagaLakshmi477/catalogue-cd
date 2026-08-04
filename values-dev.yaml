@@ -1,5 +1,5 @@
 deployment:
-  imageVesrion: IMAGE_VERSION # we can repace during run time based on the ci job version
+  imageVersion: IMAGE_VERSION # we can repace during run time based on the ci job version
   imageUrl: lakshmi1092/catalogue
 hpa:
   maxreplicas: 10
